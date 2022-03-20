@@ -1,3 +1,4 @@
+import './style.css';
 import Engine from "./core/engine";
 
 const canvas = document.querySelector("canvas");
@@ -23,6 +24,9 @@ class Test implements Component {
 }
 
 if (canvas){
+    canvas.width = 320;
+    canvas.height = 320;
+
     const engine = new Engine(canvas);
 
     engine.components.push(new Test())

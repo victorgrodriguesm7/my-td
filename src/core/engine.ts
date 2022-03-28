@@ -2,9 +2,6 @@ export default class Engine {
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
     screenSize: ScreenSize;
-    mouseEvent: CustomMouseEvent = {
-        click: false
-    };
 
     components: Component[] = [];
 
@@ -17,11 +14,6 @@ export default class Engine {
             width: canvas.width,
             height: canvas.height
         }
-        this.canvas.addEventListener("click", this.handleMouseEvent as any as EventListener);
-    }
-    
-    handleMouseEvent(_canvas: HTMLCanvasElement, event: MouseEvent){
-        console.log(event)
     }
 
     clearCanvas(){

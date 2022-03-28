@@ -36,17 +36,17 @@ export default class Engine {
             fpsInterval = 1000 / maxFps, // 60 fps in a Second
             startTime = Date.now();
         
-        let then = startTime;
+        let lastFrame = startTime;
 
         const loop = () => {
             requestAnimationFrame(loop)
 
-            const now = Date.now();
-            const elapsedTime = now - then;
+            const currentFrame = Date.now();
+            const elapsedTime = currentFrame - lastFrame;
 
             if (elapsedTime > fpsInterval){
                 this.clearCanvas();
-                then = now - (elapsedTime % fpsInterval);
+                lastFrame = currentFrame - (elapsedTime % fpsInterval);
 
                 const props: RenderProps = {
                     components: this.components,

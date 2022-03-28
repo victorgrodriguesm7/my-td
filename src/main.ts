@@ -1,35 +1,37 @@
 import './style.css';
 import Engine from "./core/engine";
-
+import InputHandler from "./core/input";
+import LightTurret from './entities/LightTurret';
+import MovableEnemy from './entities/MovableEnemy';
 const canvas = document.querySelector("canvas");
 
 
-class Test implements Component {
-    x: number  = 0;
-    y: number  = 0;
-    width: number = 10;
-    height: number = 10;
 
-    update({ context, screenSize: { width } }: RenderProps): void {
-        context.fillRect(
-            this.x, this.y, this.width, this.height
-        )
-
-        this.x += 2;
-
-        if (this.x > width){
-            this.x = 0;
-        }
-    }
-}
-
-if (canvas){
+if (canvas){    
     canvas.width = 320;
     canvas.height = 320;
 
     const engine = new Engine(canvas);
 
-    engine.components.push(new Test())
+    const inputHandler = InputHandler.instance;
 
+    inputHandler.init(canvas);
+
+    const turret = new LightTurret({
+        x: canvas.width / 2,
+        y: canvas.height / 2
+    });
+
+    const movableEnemy = new MovableEnemy({
+        width: 10,
+        height: 10,
+        x: 20,
+        y: 0
+    });
+
+    engine.addComponent(turret);
+
+    engine.addComponent(movableEnemy);
+    
     engine.run();
 }

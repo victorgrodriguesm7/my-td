@@ -1,4 +1,5 @@
 import Turret from "./Turret";
+import spriteUrl from '../assets/light.png';
 
 interface LightTurretProps {
     x: number;
@@ -28,7 +29,7 @@ export default class LightTurret extends Turret {
 
         const sprite = document.createElement("img");
 
-        sprite.src = "/light.png";
+        sprite.src = spriteUrl;
         
         context.fillRect(
             this.x,
@@ -75,7 +76,6 @@ export default class LightTurret extends Turret {
                 this.aim();
             }
         }
-        // this.showRadius(props.context);
 
         this.draw(context);
     }

@@ -8,24 +8,29 @@ declare global {
         components: Component[];
     }
 
-    interface CustomMouseEvent {
-        click: boolean;
-        x?: number;
-        y?: number;
-    }
+    type PartialRecord<K extends keyof any, T> = {
+        [P in K]?: T;
+    };
 
     interface ScreenSize {
         width: number;
         height: number;
     }
 
-    abstract class Component {
+    interface Coordinates {
+        x: number;
+        y: number
+    }
+
+    type Quadrant = 1 | 2 | 3 | 4;
+
+    interface Component {
         x: number;
         y: number;
 
         width: number;
         height: number;
 
-        abstract update(props: RenderProps): void;
+        update(props: RenderProps): void;
     }
 }

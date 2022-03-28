@@ -16,6 +16,10 @@ export default class Engine {
         }
     }
 
+    addComponent(component: Component){
+        this.components.push(component);
+    }
+    
     clearCanvas(){
         const { width, height } = this.screenSize;
         

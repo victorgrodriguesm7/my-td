@@ -71,7 +71,7 @@ export default class LightTurret extends Turret {
             if (target){
                 const { enemy } = target;
 
-                this.findAngle(enemy, context, screenSize);
+                this.findAngle(enemy);
                 this.aim();
             }
         }

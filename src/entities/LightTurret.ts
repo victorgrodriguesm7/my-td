@@ -63,7 +63,7 @@ export default class LightTurret extends Turret {
     }
 
     update(props: RenderProps): void {
-        const { context, components, screenSize } = props;
+        const { context, components } = props;
 
         if (this.canShoot()){
             const target = this.findNearestEnemy(components);

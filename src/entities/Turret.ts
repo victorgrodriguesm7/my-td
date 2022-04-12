@@ -1,3 +1,4 @@
+import InputHandler from "../core/input";
 import Angle from "../utils/angle";
 import getCenter from "../utils/getCenter";
 import Enemy from "./Enemy";
@@ -9,6 +10,8 @@ export interface TurretBaseProps {
     height: number;
     firerate: number;
     radius: number;
+    baseValue: number;
+    maxLife: number;
 }
 
 interface NearestEnemy {
@@ -16,7 +19,7 @@ interface NearestEnemy {
     distance: number;
 }
 
-export default abstract class Turret implements Component {
+export default class Turret implements Component {
     x: number;
     y: number;
     width: number;
@@ -32,13 +35,20 @@ export default abstract class Turret implements Component {
     level: number = 1;
     MAX_LEVEL: number = 3;
 
+    baseValue: number;
+
+    life: number;
+    maxLife: number;
+
     constructor({
         x,
         y,
         width,
         height,
         firerate,
-        radius
+        radius,
+        baseValue,
+        maxLife
     }: TurretBaseProps){
         this.x = x;
         this.y = y;
@@ -46,6 +56,36 @@ export default abstract class Turret implements Component {
         this.height = height;
         this.firerate = firerate;
         this.radius = radius;
+        this.baseValue = baseValue;
+        this.maxLife = maxLife;
+        this.life = maxLife;
+
+        const inputHandler = InputHandler.instance;
+
+        inputHandler.addListener({
+            event: "click",
+            strategy: "hitbox",
+            callback: this.toggleRadius,
+            component: this
+        });
+    }
+
+    get currentValue(): number {
+        return this.baseValue * (this.level + 1 / 10)
+    }
+
+    get upgradeValue(): number {
+        return this.baseValue * (this.level + 1 / 10)
+    }
+    
+    get sellValue(): number {
+        const currentValue = this.baseValue * (this.level / 10)
+        
+        return currentValue - (currentValue * 0.2);
+    }
+
+    get repairCost(): number {
+        return 100 - this.life * this.currentValue / this.maxLife
     }
 
     findNearestEnemy(components: Component[]): NearestEnemy | null {
@@ -106,11 +146,11 @@ export default abstract class Turret implements Component {
         }
     }
 
-    aim(){
+    aim(): boolean {
         const lerp = 1;
 
         if (Math.round(this.currentAngle) === Math.round(this.targetAngle)){
-            return;
+            return true;
         }
 
         const distanceSum = this.targetAngle - this.currentAngle;
@@ -137,6 +177,12 @@ export default abstract class Turret implements Component {
                 }
             }
         }
+
+        return false;
+    }
+
+    toggleRadius() {
+        this.selected = !this.selected;
     }
 
     showRadius(context: RenderProps["context"]){
@@ -145,15 +191,43 @@ export default abstract class Turret implements Component {
         context.lineWidth = 1;
         context.strokeStyle = "rgba(52, 152, 219, 0.5)";
 
+        const center = getCenter(this);
+
         context.arc(
-            this.x,
-            this.y,
+            center.x,
+            center.y,
             this.radius,
             0,
             2 * Math.PI
         );
 
         context.stroke();
+    }
+
+    showLifeBar(context: RenderProps["context"]){
+        const lifePercent = this.life / this.maxLife;
+
+        if (lifePercent === 1){
+            return;
+        }
+
+        context.fillStyle = "#F00";
+
+        context.fillRect(
+            this.x,
+            this.y + this.height,
+            this.width,
+            4
+        );
+
+        context.fillStyle = "#0F0";
+
+        context.fillRect(
+            this.x,
+            this.y + this.height,
+            this.width * lifePercent,
+            4
+        );
     }
 
     update(_props: RenderProps): void {}

@@ -6,6 +6,7 @@ declare global {
         screenSize: ScreenSize;
         deltaTime: number;
         components: Component[];
+        addComponent: (component: Component) => void;
     }
 
     type PartialRecord<K extends keyof any, T> = {

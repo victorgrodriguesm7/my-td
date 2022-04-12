@@ -3,13 +3,26 @@ import Engine from "./core/engine";
 import InputHandler from "./core/input";
 import LightTurret from './entities/LightTurret';
 import MovableEnemy from './entities/MovableEnemy';
+import Background from './core/background';
+import getCellsCount from './utils/getCellsCount';
 const canvas = document.querySelector("canvas");
 
+const screen: ScreenSize = {
+    width: 32 * 20,
+    height: 32 * 20
+};
 
+const background = new Background(screen);
+const cells = getCellsCount(screen, 32);
+const map = new Array(cells.total).fill([ 0 ]);
+
+background.generateMap(
+    map
+);
 
 if (canvas){    
-    canvas.width = 320;
-    canvas.height = 320;
+    canvas.width = screen.width;
+    canvas.height = screen.height;
 
     const engine = new Engine(canvas);
 
@@ -23,11 +36,13 @@ if (canvas){
     });
 
     const movableEnemy = new MovableEnemy({
-        width: 10,
-        height: 10,
-        x: 20,
+        width: 32,
+        height: 32,
+        x: 0,
         y: 0
     });
+
+    engine.changeBackground(background);
 
     engine.addComponent(turret);
 

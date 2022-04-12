@@ -36,6 +36,8 @@ export default class MovableEnemy extends Enemy {
     }
 
     update({ context }: RenderProps): void {
+        context.fillStyle = "#F00";
+        
         context.fillRect(
             this.x,
             this.y,

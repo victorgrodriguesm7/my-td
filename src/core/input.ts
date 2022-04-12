@@ -87,9 +87,10 @@ export default class InputHandler {
                 callback(props);
             } else if (strategy === "hitbox"){
                 if (type === "click" && typeof x !== "undefined" && typeof y !== "undefined"){
+
                     if (
-                        component.x < x && 
-                        component.x + component.width < x &&
+                        component.x < x &&
+                        component.x + component.width > x &&
                         component.y < y &&
                         component.y + component.height > y
                     ) {

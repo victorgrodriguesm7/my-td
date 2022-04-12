@@ -1,5 +1,7 @@
 import Turret from "./Turret";
-import spriteUrl from '../assets/light.png';
+import spriteUrl from '../assets/light_turret_32x32.png';
+import spriteBaseUrl from '../assets/light_turret_base_32x32.png';
+import LightBullet from "./LightBullet";
 
 interface LightTurretProps {
     x: number;
@@ -15,27 +17,29 @@ export default class LightTurret extends Turret {
         super({
             x,
             y,
-            height: 16,
-            width: 16,
-            radius: 100,
-            firerate: 10,
+            height: 32,
+            width: 32,
+            radius: 200,
+            firerate: 1,
+            maxLife: 100,
+            baseValue: 100
         });
 
         this.targetAngle = 180;
     }
 
     draw(context: RenderProps["context"]){
-        context.fillStyle = "#0F0";
-
         const sprite = document.createElement("img");
 
         sprite.src = spriteUrl;
-        
-        context.fillRect(
+
+        const spriteBase = document.createElement("img");
+        spriteBase.src = spriteBaseUrl;
+
+        context.drawImage(
+            spriteBase,
             this.x,
-            this.y,
-            this.width,
-            this.height
+            this.y
         );
 
         context.save();
@@ -64,18 +68,32 @@ export default class LightTurret extends Turret {
     }
 
     update(props: RenderProps): void {
-        const { context, components } = props;
+        const { context, components, addComponent } = props;
 
-        if (this.canShoot()){
-            const target = this.findNearestEnemy(components);
+        if (this.selected) this.showRadius(context);
 
-            if (target){
-                const { enemy } = target;
+        const target = this.findNearestEnemy(components);
 
-                this.findAngle(enemy);
-                this.aim();
+        if (target){
+            const { enemy } = target;
+
+            this.findAngle(enemy);
+            const aim = this.aim();
+
+            if (aim && this.canShoot()){
+                const bullet = new LightBullet({
+                    x: this.x,
+                    y: this.y,
+                    enemy
+                });
+
+                addComponent(bullet);
+
+                this.lastShoot = Date.now();
             }
         }
+
+        this.showLifeBar(context);
 
         this.draw(context);
     }

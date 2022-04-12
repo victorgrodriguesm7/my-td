@@ -4,6 +4,7 @@ export default class Engine {
     screenSize: ScreenSize;
 
     components: Component[] = [];
+    background?: Component;
 
     constructor(
         canvas: HTMLCanvasElement
@@ -18,6 +19,10 @@ export default class Engine {
 
     addComponent(component: Component){
         this.components.push(component);
+    }
+
+    changeBackground(background: Component){
+        this.background = background;
     }
     
     clearCanvas(){
@@ -48,8 +53,13 @@ export default class Engine {
                     components: this.components,
                     screenSize: this.screenSize,
                     context: this.context,
-                    deltaTime: elapsedTime
+                    deltaTime: elapsedTime,
+                    addComponent: this.addComponent.bind(this)
                 };
+
+                if (this.background){
+                    this.background.update(props);
+                }
             
                 for (const component of this.components){
                     component.update(props)
